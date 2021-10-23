@@ -2,6 +2,8 @@
 
 Simple script to record screenshots of your work and stitch them together into an mp4 file for each day.
 
+Inspired by this post by danluu: https://danluu.com/p95-skill/ who picked it from https://malisper.me/how-to-improve-your-productivity-as-a-working-programmer/
+
 Add a variation of this to your crontab to start automatically:
 
 ```
