@@ -13,8 +13,11 @@ if [ ! -d "${dailydir}" ]; then
 fi
 
 while true; do
-    ts=$(date +"%H%M%S")
-    targetdir="${dailydir}/${ts}.png"
-    scrot -z -p "${targetdir}"
+    # Allow for pausing capture
+    if [ ! -f /tmp/trackerpause ]; then
+        ts=$(date +"%H%M%S")
+        targetdir="${dailydir}/${ts}.png"
+        scrot -z -p "${targetdir}"
+    fi
     sleep $screenint
 done
