@@ -6,6 +6,7 @@ dir="${TARGETDIR:-~/prodtracker}"
 dailydir="${dir}/${today}"
 
 screenint="${SCREENINT:-30}"
+quality="${QUALITY:-10}"
 
 if [ ! -d "${dailydir}" ]; then
     echo "Directory absent, creating: ${dailydir}"
@@ -16,8 +17,8 @@ while true; do
     # Allow for pausing capture
     if [ ! -f /tmp/trackerpause ]; then
         ts=$(date +"%H%M%S")
-        targetdir="${dailydir}/${ts}.png"
-        scrot -z -p "${targetdir}"
+        targetdir="${dailydir}/${ts}.jpeg"
+        scrot -q "${quality}" -m -z -p "${targetdir}"
     fi
     sleep $screenint
 done

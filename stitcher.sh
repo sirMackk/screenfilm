@@ -6,7 +6,7 @@ targetdir="${dir}/${yesterday}"
 output="${targetdir}/summary.mp4"
 
 framerate=2
-crf=25
+crf=19
 
 if [ ! -d "${targetdir}" ]; then
     echo "${targetdir} doesn't exist"
@@ -19,4 +19,9 @@ if [ -f "${output}" ]; then
 fi
 
 
-ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*.png" -vcodec libx264 -crf ${crf} ${output}
+ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*.jpeg" -vcodec libx264 -crf ${crf} ${output} && rm "${targetdir/*.jpeg}"
+rc=$?
+if [ "$rc" -eq 0 ]; then
+    echo "Deleting *.jpeg files in ${targetdir}"
+    rm "${targetdir}/*.jpeg"
+fi
