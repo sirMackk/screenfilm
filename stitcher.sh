@@ -23,5 +23,5 @@ ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*.jpeg" -vc
 rc=$?
 if [ "$rc" -eq 0 ]; then
     echo "Deleting *.jpeg files in ${targetdir}"
-    rm "${targetdir}/*.jpeg"
+    rm ${targetdir}/*.jpeg
 fi
