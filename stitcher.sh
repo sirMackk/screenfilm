@@ -19,7 +19,7 @@ if [ -f "${output}" ]; then
 fi
 
 
-ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*.jpeg" -vcodec libx264 -crf ${crf} ${output} && rm "${targetdir/*.jpeg}"
+ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*.jpeg" -vcodec libx264 -crf ${crf} ${output}
 rc=$?
 if [ "$rc" -eq 0 ]; then
     echo "Deleting *.jpeg files in ${targetdir}"
