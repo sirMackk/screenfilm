@@ -18,4 +18,5 @@ Make sure you specify the TARGETDIR, cd, and DISPLAY variables correctly! If it'
 
 ## TODO
 
-- [ ] Handle skip days (generate summary, clean up jpegs)
+- [x] Handle skip days (generate summary, clean up jpegs).
+- [ ] Handle suspends that cross the daily boundary.
