@@ -6,6 +6,7 @@ quality="${QUALITY:-10}"
 
 function set_today() {
     today=$(date --date="today" +"%m%d%y")
+    echo "Set today's date: ${today}"
 }
 
 function get_dailydir() {
@@ -45,6 +46,7 @@ function screenshot_loop() {
 
 function main() {
     set_today
+    check_or_create_dir
     screenshot_loop
 }
 
