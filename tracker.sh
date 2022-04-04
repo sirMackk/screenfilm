@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e
 
-screenint="${SCREENINT:-3}"
+screenint="${SCREENINT:-30}"
 
 function set_today() {
     today=$(gdate --date="today" +"%m%d%y")
@@ -42,7 +42,10 @@ function screenshot_loop() {
             for monitor_ix in $(seq $num_monitors); do
               targetdir="${dailydir}/${ts}_m${monitor_ix}.jpg"
               screencapture -x -D $monitor_ix -t jpg  "${targetdir}"
+              #saves 50% space
+              mogrify -quality 80% "${targetdir}" &
             done
+            wait
         fi
         sleep $screenint
     done

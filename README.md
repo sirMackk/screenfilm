@@ -11,6 +11,11 @@ External dependencies:
 Add a variation of this to your crontab to start automatically:
 
 ```
+#Mac
+echo '* */6 * * * /Users/clarkbenham/screenfilm/start.sh' >> ~/.crontab
+crontab ~/.crontab
+
+
 @reboot bash -l -c "sleep 10; export TARGETDIR=/home/matto/projects/screenfilm/saves; export DISPLAY=':0.0'; cd /home/matto/projects/screenfilm/ && ./start.sh 2>&1 | /usr/bin/logger -t screenfilm"
 ```
 
