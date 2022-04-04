@@ -4,7 +4,7 @@ set -e
 screenint="${SCREENINT:-30}"
 
 function set_today() {
-    today=$(gdate --date="today" +"%m%d%y")
+    today=$(date +"%m%d%y")
     echo "Set today's date: ${today}"
 }
 
@@ -23,12 +23,23 @@ function check_or_create_dir() {
     fi
 }
 
+function get_monitor_names() {
+  system_profiler SPDisplaysDataType -json |
+  jq -r '.SPDisplaysDataType[1].spdisplays_ndrvs | .[] | ._name' | 
+  tr -d ' \t' |
+  tr '[A-Z]' '[a-z]'
+}
+
+function get_num_monitors() {
+  system_profiler SPDisplaysDataType | grep -c 'Resolution:'
+}
+
 function screenshot_loop() {
     #Change to writing jpegs
     defaults write com.apple.screencapture type jpg;killall SystemUIServer
     while true; do
         # If it's a new day, reset some variables and create a new directory for saving screenshots.
-        date_now=$(gdate --date="today" +"%m%d%y")
+        date_now=$(date +"%m%d%y")
         if [ "${date_now}" != "${today}" ]; then
             set_today
             check_or_create_dir
@@ -38,9 +49,10 @@ function screenshot_loop() {
         # Allow for pausing capture
         if [ ! -f /tmp/trackerpause ]; then
             ts=$(date +"%H%M%S")
-            num_monitors=$(system_profiler SPDisplaysDataType | grep -c 'Resolution:')
-            for monitor_ix in $(seq $num_monitors); do
-              targetdir="${dailydir}/${ts}_m${monitor_ix}.jpg"
+            monitor_names=($(get_monitor_names))
+            for monitor_ix in $(seq $(get_num_monitors)); do
+              monitor=${monitor_names[((monitor_ix-1))]} 
+              targetdir="${dailydir}/${ts}_${monitor}.jpg"
               screencapture -x -D $monitor_ix -t jpg  "${targetdir}"
               #saves 50% space
               mogrify -quality 80% "${targetdir}" &

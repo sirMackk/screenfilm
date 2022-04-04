@@ -8,17 +8,21 @@ framerate=2
 crf=19
 
 function set_todays() {
-    todays=$(gdate --date="today" +"%m%d%y")
+    todays=$(date +"%m%d%y")
+}
+
+#List all monitor names that were used in dir
+function get_monitor_names() { 
+  d="$1"
+  ls $d | tr '_\.' ' ' | cut -d' ' -f2 | sort | uniq
 }
 
 function stitch() {
-    targetdir=$1
-    num_monitors=$(system_profiler SPDisplaysDataType | grep -c 'Resolution:')
-    for monitor_ix in $(seq $num_monitors); do
-      output="${targetdir}/summary_m${monitor_ix}.mp4"
-      echo "Generating video(s) for $targetdir"
-      ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*_m${monitor_ix}.jpg" -vcodec libx264 -crf ${crf} ${output}
-    done
+    targetdir="$1"
+    monitor_name="$2"
+    output_file="${targetdir}/summary_${monitor_name}.mp4"
+    echo "Generating video(s) for $monitor_name in $targetdir: $output_file"
+    ffmpeg -r ${framerate} -f image2 -pattern_type glob -i "${targetdir}/*_${monitor_name}.jpg" -vcodec libx264 -crf ${crf} ${output_file}
 }
 
 function clean() {
@@ -32,7 +36,7 @@ function clean() {
 function main() {
     set_todays
     while true; do
-        date_now=$(gdate --date="today" +"%m%d%y")
+        date_now=$(date +"%m%d%y")
         if [ "${date_now}" != "${todays}" ]; then
             set_todays
         fi
@@ -42,12 +46,15 @@ function main() {
             if [ "${d: -6}" == "${todays}" ] ; then
                 continue
             fi
-            # Use summary.mp4 as a marker whether a directory has been processed or not.
-            output_file="${d}/summary.mp4"
-            if [ ! -f "${output_file}" ]; then
-                echo starting $output_file
-                stitch "${d}"
-            fi
+            #function is only evaluated at the start
+            for monitor_name in $(get_monitor_names); do
+              # Use summary.mp4 as a marker whether a directory has been processed or not.
+              output_file="${targetdir}/summary_${monitor_name}.mp4"
+              if [ ! -f "${output_file}" ]; then
+                  echo starting $output_file
+                  stitch "${d}" "$monitor_name"
+              fi
+            done
             clean "${d}"
         done
         # Re-run this loop every hour, so if you suspend your computer over night,

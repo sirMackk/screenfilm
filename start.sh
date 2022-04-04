@@ -1,4 +1,5 @@
 #! /bin/bash
+pushd $(dirname $0)
 
 pgrep tracker.sh > /dev/null
 rc=$?
@@ -12,6 +13,6 @@ echo "Running stitcher"
 ./stitcher.sh & 2>&1
 
 # Wait for display to come up
-sleep 45
+sleep 10
 echo "Running tracker"
 ./tracker.sh &
