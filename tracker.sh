@@ -1,16 +1,15 @@
 #! /bin/bash
 set -e
 
-screenint="${SCREENINT:-30}"
-quality="${QUALITY:-10}"
+screenint="${SCREENINT:-3}"
 
 function set_today() {
-    today=$(date --date="today" +"%m%d%y")
+    today=$(gdate --date="today" +"%m%d%y")
     echo "Set today's date: ${today}"
 }
 
 function get_dailydir() {
-    dir="${TARGETDIR:-~/prodtracker}"
+    dir="${TARGETDIR:-$HOME/prodtracker}"
     dailydir="${dir}/${today}"
     echo "${dailydir}"
 }
@@ -19,15 +18,17 @@ function get_dailydir() {
 function check_or_create_dir() {
     dailydir=$(get_dailydir)
     if [ ! -d "${dailydir}" ]; then
-        echo "Directory absent, creating: ${dailydir}"
         mkdir -p "${dailydir}"
+        echo "Directory absent, created: ${dailydir}"
     fi
 }
 
 function screenshot_loop() {
+    #Change to writing jpegs
+    defaults write com.apple.screencapture type jpg;killall SystemUIServer
     while true; do
         # If it's a new day, reset some variables and create a new directory for saving screenshots.
-        date_now=$(date --date="today" +"%m%d%y")
+        date_now=$(gdate --date="today" +"%m%d%y")
         if [ "${date_now}" != "${today}" ]; then
             set_today
             check_or_create_dir
@@ -37,8 +38,11 @@ function screenshot_loop() {
         # Allow for pausing capture
         if [ ! -f /tmp/trackerpause ]; then
             ts=$(date +"%H%M%S")
-            targetdir="${dailydir}/${ts}.jpeg"
-            scrot -q "${quality}" -m -z -p "${targetdir}"
+            num_monitors=$(system_profiler SPDisplaysDataType | grep -c Chipset)
+            for monitor_ix in $(seq $num_monitors); do
+              targetdir="${dailydir}/${ts}_m${monitor_ix}.jpg"
+              screencapture -x -D $monitor_ix -t jpg  "${targetdir}"
+            done
         fi
         sleep $screenint
     done
