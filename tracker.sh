@@ -38,7 +38,7 @@ function screenshot_loop() {
         # Allow for pausing capture
         if [ ! -f /tmp/trackerpause ]; then
             ts=$(date +"%H%M%S")
-            num_monitors=$(system_profiler SPDisplaysDataType | grep -c Chipset)
+            num_monitors=$(system_profiler SPDisplaysDataType | grep -c 'Resolution:')
             for monitor_ix in $(seq $num_monitors); do
               targetdir="${dailydir}/${ts}_m${monitor_ix}.jpg"
               screencapture -x -D $monitor_ix -t jpg  "${targetdir}"

@@ -13,7 +13,7 @@ function set_todays() {
 
 function stitch() {
     targetdir=$1
-    num_monitors=$(ls "$targetdir" | ggrep -Po '_m\d+.jpg' | sort | uniq | wc -l)
+    num_monitors=$(system_profiler SPDisplaysDataType | grep -c 'Resolution:')
     for monitor_ix in $(seq $num_monitors); do
       output="${targetdir}/summary_m${monitor_ix}.mp4"
       echo "Generating video(s) for $targetdir"
