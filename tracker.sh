@@ -27,7 +27,7 @@ function get_monitor_names() {
   system_profiler SPDisplaysDataType -json |
   jq -r '.SPDisplaysDataType[1].spdisplays_ndrvs | .[] | ._name' | 
   tr -d ' \t' |
-  tr '[A-Z]' '[a-z]'
+  tr '[:upper:]' '[:lower:]'
 }
 
 function get_num_monitors() {
@@ -49,17 +49,17 @@ function screenshot_loop() {
         # Allow for pausing capture
         if [ ! -f /tmp/trackerpause ]; then
             ts=$(date +"%H%M%S")
-            monitor_names=($(get_monitor_names))
-            for monitor_ix in $(seq $(get_num_monitors)); do
-              monitor=${monitor_names[((monitor_ix-1))]} 
-              targetdir="${dailydir}/${ts}_${monitor}.jpg"
+            monitor_ix=1
+            while read -r monitor_name; do 
+              targetdir="${dailydir}/${ts}_${monitor_name}.jpg"
               screencapture -x -D $monitor_ix -t jpg  "${targetdir}"
               #saves 50% space
               mogrify -quality 80% "${targetdir}" &
-            done
+            ((monitor_ix++))
+            done < <(get_monitor_names)
             wait
         fi
-        sleep $screenint
+        sleep "$screenint"
     done
 }
 
