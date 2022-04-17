@@ -13,7 +13,7 @@ function set_todays() {
 
 #List all monitor names that were used in dir
 function get_monitor_names() { 
-  find "$1" -mindepth 2 -type f -name '*.jpg'  |
+  find "$1" -type f -name '*.jpg'  |
   tr '_\.' ' ' |
   cut -d' ' -f2 | 
   sort | uniq
@@ -29,9 +29,10 @@ function stitch() {
 
 function clean() {
     targetdir=$1
-    if [ "$(find "${targetdir}" -name "*.jpeg" | wc -l)" -gt 0 ]; then
-        echo "Deleting *.jpeg files in ${targetdir}"
+    if [ "$(find "${targetdir}" -name '*.jpeg' -o -name '*.jpg' | wc -l)" -gt 0 ]; then
+        echo "Deleting *.jpeg/jpg files in ${targetdir}"
         rm "${targetdir}"/*.jpeg
+        rm "${targetdir}"/*.jpg
     fi
 }
 
@@ -51,10 +52,10 @@ function main() {
             #function is only evaluated at the start
             while read -r monitor_name; do 
               # Use summary.mp4 as a marker whether a directory has been processed or not.
-              output_file="${targetdir}/summary_${monitor_name}.mp4"
+              output_file="${d}/summary_${monitor_name}.mp4"
               if [ ! -f "${output_file}" ]; then
                   echo "starting $output_file"
-                  stitch "${d}" "$monitor_name"
+                  stitch "${d}" "$monitor_name" 2>/dev/null
               fi
             done < <(get_monitor_names "$d")
             clean "${d}"
