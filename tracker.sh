@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e
 
-screenint="${SCREENINT:-30}"
+screenint="${SCREENINT:-14}" #takes ~1 sec to take all screenshots
 
 function set_today() {
     today=$(date +"%m%d%y")
