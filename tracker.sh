@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash -i
 set -e
 
 screenint="${SCREENINT:-14}" #takes ~1 sec to take all screenshots

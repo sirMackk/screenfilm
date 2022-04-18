@@ -1,5 +1,4 @@
-#! /bin/bash
-set -x
+#!/bin/bash  -i
 set -e
 
 dir="${TARGETDIR:-$HOME/prodtracker}"
