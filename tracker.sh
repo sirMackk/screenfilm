@@ -1,4 +1,7 @@
-#!/bin/bash -i
+#!/bin/bash 
+shopt -s expand_aliases
+source ~/.bashrc
+set -x
 set -e
 
 screenint="${SCREENINT:-14}" #takes ~1 sec to take all screenshots

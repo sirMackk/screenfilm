@@ -1,5 +1,14 @@
-#! /bin/bash
-pushd $(dirname $0)
+#!/bin/bash
+
+#ps -ef | grep track | awk '{print $2}' | xargs -I{} kill -9 {}
+#ps -ef | grep stitch | awk '{print $2}' | xargs -I{} kill -9 {}
+
+
+function pgrep() {
+    ps aux | grep "$1" | grep -v grep | grep -v vim
+}
+
+pushd "$(dirname "$0")" || exit
 
 pgrep tracker.sh > /dev/null
 rc=$?
@@ -10,9 +19,9 @@ if [ $rc -eq 0 ]; then
 fi
 
 echo "Running stitcher"
-./stitcher.sh & 2>&1
+#./stitcher.sh & 
 
 # Wait for display to come up
-sleep 10
+#sleep 10
 echo "Running tracker"
 ./tracker.sh &
