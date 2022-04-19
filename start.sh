@@ -1,8 +1,11 @@
 #!/bin/bash -il
-#Don't use this; use a service instead
 
-#ps -ef | grep track | awk '{print $2}' | xargs -I{} kill -9 {}
-#ps -ef | grep stitch | awk '{print $2}' | xargs -I{} kill -9 {}
+echo "WARN: if start as a cron job make sure have permissions to take screenshots of apps: https://apple.stackexchange.com/questions/378553/crontab-operation-not-permitted"
+
+#Don't use this as cron; use a service instead
+
+#ps -ef | grep track | awk '{print $2}' | grep -v vim |  xargs -I{} kill -9 {}
+#ps -ef | grep stitch | awk '{print $2}' | grep -v vim | xargs -I{} kill -9 {}
 
 
 function pgrep() {
