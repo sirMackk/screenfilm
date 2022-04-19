@@ -1,6 +1,4 @@
-#!/bin/bash 
-shopt -s expand_aliases
-source ~/.bashrc &>/dev/null
+#!/bin/bash -il
 set -x
 set -e
 

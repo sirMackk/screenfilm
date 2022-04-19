@@ -1,4 +1,5 @@
-#!/bin/bash  -i
+#!/bin/bash  -il
+set -x
 set -e
 
 dir="${TARGETDIR:-$HOME/prodtracker}"
@@ -29,7 +30,10 @@ function stitch() {
     #write images to have the filename timestamp HMS embedded as H:M:S
     echo "Adding timestamps to images for $monitor_name in $targetdir"
     ls "${targetdir}/"*_"${monitor_name}".jpg  |
-      awk -F'[/_]' '{print $0,substr($2,1,2)":"substr($2,3,2)":"substr($2,5,2)}'   |
+      awk -F'[/_]' '{
+        timestamp=$(NF-1)
+        print $0,substr(timestamp,1,2)":"substr(timestamp,3,2)":"substr(timestamp,5,2)
+      }'   |
       xargs -L1 -P8 bash -c '
         file="$0"
         time=$1
@@ -51,16 +55,17 @@ function stitch() {
       "${output_file}"
 
     #remove new images
-    rm "${targetdir}/"*_mod.jpg
+    rm "${targetdir}/"*_"${monitor_name}"_mod.jpg
 }
 
 
 function clean() {
     targetdir=$1
+    monitor_name="$2"
     if [ "$(find "${targetdir}" -name '*.jpeg' -o -name '*.jpg' | wc -l)" -gt 0 ]; then
-        echo "Deleting *.jpeg/jpg files in ${targetdir}"
-        rm "${targetdir}"/*.jpg || :
-        rm "${targetdir}"/*.jpeg || :
+        echo "Deleting *_${monitor_name}.jpeg/jpg files in ${targetdir}"
+        rm "${targetdir}"/*_"${monitor_name}".jpg || true
+        rm "${targetdir}"/*_"${monitor_name}".jpeg || true
     fi
 }
 
@@ -72,21 +77,21 @@ function main() {
             set_todays
         fi
         
-        while read -r d; do 
+        while read -r day_dir; do 
             # Do not stitch or clean today's directory, only those from the past.
-            if [ "${d: -6}" == "${todays}" ] ; then
+            if [ "${day_dir: -6}" == "${todays}" ] ; then
                 continue
             fi
             #function is only evaluated at the start
             while read -r monitor_name; do 
               # Use summary.mp4 as a marker whether a directory has been processed or not.
-              output_file="${d}/summary_${monitor_name}.mp4"
+              output_file="$dir/$day_dir/summary_${monitor_name}.mp4"
               if [ ! -f "${output_file}" ]; then
                   echo "starting $output_file"
-                  stitch "${d}" "$monitor_name" 
+                  stitch "$dir/$day_dir" "$monitor_name" 
               fi
-            done < <(get_monitor_names "$d")
-            clean "${d}"
+            done < <(get_monitor_names "$dir/$day_dir")
+            clean "$dir/$day_dir"
         done < <(find "$dir" -maxdepth 1 -mindepth 1 -type d)
         # Re-run this loop every hour, so if you suspend your computer over night,
         # this will create a new video summary and clean up older files.
