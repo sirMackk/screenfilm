@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 #ps -ef | grep track | awk '{print $2}' | xargs -I{} kill -9 {}
 #ps -ef | grep stitch | awk '{print $2}' | xargs -I{} kill -9 {}
@@ -14,14 +14,16 @@ pgrep tracker.sh > /dev/null
 rc=$?
 
 if [ $rc -eq 0 ]; then
-    echo "tracker already running"
-    exit 0
+  #commented out so don't keep getting mail
+   #echo "tracker already running"
+   exit 0
 fi
 
+
 echo "Running stitcher"
-#./stitcher.sh & 
+./stitcher.sh & 
 
 # Wait for display to come up
-#sleep 10
+sleep 2
 echo "Running tracker"
 ./tracker.sh &
