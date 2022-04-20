@@ -31,10 +31,6 @@ function get_monitor_names() {
   tr '[:upper:]' '[:lower:]'
 }
 
-function get_num_monitors() {
-  system_profiler SPDisplaysDataType | grep -c 'Resolution:'
-}
-
 function screenshot_loop() {
     #Change to writing jpegs
     defaults write com.apple.screencapture type jpg;killall SystemUIServer
@@ -56,7 +52,7 @@ function screenshot_loop() {
               screencapture -x -D $monitor_ix -t jpg  "${targetdir}"
               #saves 50% space
               mogrify -quality 80% "${targetdir}" &
-            ((monitor_ix++))
+              ((monitor_ix++))
             done < <(get_monitor_names)
             wait
         fi

@@ -40,7 +40,7 @@ function stitch() {
         out_file="${file/.jpg/_mod.jpg}"
         text_file=$(uuidgen)
         echo $time > $text_file
-        ffmpeg -i $file -vf "drawtext=:fontsize=24:textfile=$text_file:fontcolor=white@0.8:x=7:y=7" $out_file 2>/dev/null
+        ffmpeg -i "$file" -vf "drawtext=:fontsize=28:textfile=$text_file:fontcolor=white@0.8:x=7:y=h-th-10" "$out_file" 2>/dev/null
         rm $text_file
       '
 
@@ -85,13 +85,13 @@ function main() {
             #function is only evaluated at the start
             while read -r monitor_name; do 
               # Use summary.mp4 as a marker whether a directory has been processed or not.
-              output_file="$dir/$day_dir/summary_${monitor_name}.mp4"
+              output_file="$day_dir/summary_${monitor_name}.mp4"
               if [ ! -f "${output_file}" ]; then
                   echo "starting $output_file"
-                  stitch "$dir/$day_dir" "$monitor_name" 
+                  stitch "$day_dir" "$monitor_name" 
               fi
-            done < <(get_monitor_names "$dir/$day_dir")
-            clean "$dir/$day_dir"
+              clean "$day_dir" "$monitor_name"
+            done < <(get_monitor_names "$day_dir")
         done < <(find "$dir" -maxdepth 1 -mindepth 1 -type d)
         # Re-run this loop every hour, so if you suspend your computer over night,
         # this will create a new video summary and clean up older files.
