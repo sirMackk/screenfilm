@@ -1,4 +1,4 @@
-#!/bin/bash -il
+#!/bin/bash
 
 dir="${TARGETDIR:-$HOME/prodtracker}"
 pushd "$dir" || (echo "couldn't cd to $dir" &&  exit ) #absolute paths for cron
@@ -27,9 +27,10 @@ fi
 
 #echo "Running stitcher"
 ## make paths absolute so can run in cron
-/Users/clarkbenham/screenfilm/stitcher.sh & 
+/Users/clarkbenham/screenfilm/stitcher.sh </dev/null & 
 
 # Wait for display to come up
 sleep 2
 #echo "Running tracker"
-/Users/clarkbenham/screenfilm/tracker.sh &
+/Users/clarkbenham/screenfilm/tracker.sh </dev/null &
+wait
