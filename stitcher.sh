@@ -89,8 +89,8 @@ function main() {
               if [ ! -f "${output_file}" ]; then
                   echo "starting $output_file"
                   stitch "$day_dir" "$monitor_name" 
+                  clean "$day_dir" "$monitor_name"
               fi
-              clean "$day_dir" "$monitor_name"
             done < <(get_monitor_names "$day_dir")
         done < <(find "$dir" -maxdepth 1 -mindepth 1 -type d)
         # Re-run this loop every hour, so if you suspend your computer over night,

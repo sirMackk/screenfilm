@@ -1,7 +1,7 @@
 #!/bin/bash
 
 dir="${TARGETDIR:-$HOME/prodtracker}"
-pushd "$dir" || (echo "couldn't cd to $dir" &&  exit ) #absolute paths for cron
+pushd "$dir" &>/dev/null || (echo "couldn't cd to $dir" &&  exit ) #absolute paths for cron
 
 #echo "WARN: if start as a cron job make sure have permissions to take screenshots of apps: https://apple.stackexchange.com/questions/378553/crontab-operation-not-permitted"
 

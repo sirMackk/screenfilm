@@ -12,7 +12,7 @@ Add a variation of this to your crontab to start automatically:
 
 ```
 #Mac
-echo '* */6 * * * /Users/clarkbenham/screenfilm/start.sh' >> ~/.crontab
+echo '0 0 */1 * * /Users/clarkbenham/screenfilm/start.sh' >> ~/.crontab
 crontab ~/.crontab
 
 
