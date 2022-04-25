@@ -11,16 +11,13 @@ pushd "$dir" &>/dev/null || (echo "couldn't cd to $dir" &&  exit ) #absolute pat
 #ps -ef | grep stitch | awk '{print $2}' | grep -v vim | xargs -I{} kill -9 {}
 
 
-function pgrep() {
-    ps aux | grep "$1" | grep -v grep | grep -v vim
+function already_running() {
+    pgrep -f "tracker.sh" | grep -cv 'grep\|vim\|nvim' 
 }
 
-pgrep tracker.sh > /dev/null
-rc=$?
-
 #commented out echos so don't keep getting mail
-if [ $rc -eq 0 ]; then
-   #echo "tracker already running"
+if [[ $(already_running) -gt 0  ]]; then
+   echo "tracker already running"
    exit 0
 fi
 

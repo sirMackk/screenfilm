@@ -38,7 +38,7 @@ function stitch() {
         file="$0"
         time=$1
         out_file="${file/.jpg/_mod.jpg}"
-        text_file=$(uuidgen)
+        text_file=/tmp/$(uuidgen)
         echo $time > $text_file
         ffmpeg -i "$file" -vf "drawtext=:fontsize=28:textfile=$text_file:fontcolor=white@0.8:x=7:y=h-th-10" "$out_file" 2>/dev/null
         rm $text_file
