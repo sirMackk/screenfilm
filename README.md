@@ -21,6 +21,26 @@ crontab ~/.crontab
 
 Make sure you specify the TARGETDIR, cd, and DISPLAY variables correctly! If it's not working, check syslog logs.
 
+## To playbay from multiple monitors simultaneously
+Open all videos, postion, and then to play all at a given speed settings
+```
+sleep 2 &&
+osascript \
+-e 'tell application "QuickTime Player" to set rate of document 1 to 1.5' \
+-e 'tell application "QuickTime Player" to set rate of document 2 to 1.5' \
+-e 'tell application "QuickTime Player" to set rate of document 3 to 1.5'
+```
+
+To go to a given index, in seconds
+```
+timestamp=90
+osascript \
+-e 'tell application "QuickTime Player" to set Time of document 1 to '$timestamp \
+-e 'tell application "QuickTime Player" to set Time of document 2 to '$timestamp \
+-e 'tell application "QuickTime Player" to set TIme of document 3 to '$timestamp
+```
+
+
 ## TODO
 
 - [x] Handle skip days (generate summary, clean up jpegs).
