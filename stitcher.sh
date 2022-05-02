@@ -79,7 +79,7 @@ function main() {
         
         while read -r day_dir; do 
             # Do not stitch or clean today's directory, only those from the past.
-            if [ "${day_dir: -6}" == "${todays}" ] && [ "$(date +"%H")" -ge 5 ] ; then
+            if [ "${day_dir: -6}" == "${todays}" ] ; then
                 continue
             fi
             #function is only evaluated at the start
