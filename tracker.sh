@@ -4,6 +4,8 @@ set -e
 
 screenint="${SCREENINT:-14}" #takes ~1 sec to take all screenshots
 
+function screenIsLocked { [ "$(/usr/libexec/PlistBuddy -c "print :IOConsoleUsers:0:CGSSessionScreenIsLocked" /dev/stdin 2>/dev/null <<< "$(ioreg -n Root -d1 -a)")" = "true" ] && return 0 || return 1; }
+
 function set_today() {
     today=$(date +"%m%d%y")
     echo "Set today's date: ${today}"
@@ -49,6 +51,10 @@ function screenshot_loop() {
             monitor_ix=1
             while read -r monitor_name; do 
               targetdir="${dailydir}/${ts}_${monitor_name}.jpg"
+              if screenIsLocked; then 
+                continue
+                #errors if try to take a screencapture while screen locked
+              fi
               screencapture -x -D $monitor_ix -t jpg  "${targetdir}"
               #saves 50% space
               mogrify -quality 80% "${targetdir}" &
