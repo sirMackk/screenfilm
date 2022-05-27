@@ -5,7 +5,7 @@ set -e
 dir="${TARGETDIR:-$HOME/prodtracker}"
 
 # Settled on these after manual experimentation. Optimizing for size.
-framerate=2
+framerate=4
 crf=19
 
 function set_todays() {
