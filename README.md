@@ -21,25 +21,65 @@ crontab ~/.crontab
 
 Make sure you specify the TARGETDIR, cd, and DISPLAY variables correctly! If it's not working, check syslog logs.
 
-## To playbay from multiple monitors simultaneously
-Open all videos, postion, and then to play all at a given speed settings
+## To playback from multiple monitors simultaneously
+Open all videos with `open summary_*`. This commands assume you open 3 monitors, add or delete lines as appropriate.
+
+To start all videos and play with a given speed settings
 ```
-sleep 2 &&
-osascript \
--e 'tell application "QuickTime Player" to set rate of document 1 to 1.5' \
--e 'tell application "QuickTime Player" to set rate of document 2 to 1.5' \
--e 'tell application "QuickTime Player" to set rate of document 3 to 1.5'
+function start_vids {
+  #playback rate, 1.1 is 10% faster
+  speed=${1:-1}
+  #sleep 2 &&
+  osascript \
+  -e 'tell application "QuickTime Player" to set rate of document 1 to '$speed \
+  -e 'tell application "QuickTime Player" to set rate of document 2 to '$speed \
+  -e 'tell application "QuickTime Player" to set rate of document 3 to '$speed
+}
+export -f start_vids
+start_vids 1.1
 ```
 
 To go to a given index, in seconds
 ```
-timestamp=90
-osascript \
--e 'tell application "QuickTime Player" to set Time of document 1 to '$timestamp \
--e 'tell application "QuickTime Player" to set Time of document 2 to '$timestamp \
--e 'tell application "QuickTime Player" to set TIme of document 3 to '$timestamp
+function goto_vids {
+  #eg. 120 for 2 min mark
+  timestamp=$1 
+  osascript \
+  -e 'tell application "QuickTime Player" to set Time of document 1 to '$timestamp \
+  -e 'tell application "QuickTime Player" to set Time of document 2 to '$timestamp \
+  -e 'tell application "QuickTime Player" to set TIme of document 3 to '$timestamp
+}
+goto_vids 120
 ```
 
+To stop
+```
+function stop_vids {
+  osascript \
+  -e 'tell application "QuickTime Player" to set rate of document 1 to 0' \
+  -e 'tell application "QuickTime Player" to set rate of document 2 to 0' \
+  -e 'tell application "QuickTime Player" to set rate of document 3 to 0'
+}
+stop_vids
+```
+
+To Start video again, but from 5 seconds ago
+```
+tunction restart_vids_back {
+  num_sec_ago=${1:-5}
+  speed=$2
+  #Update video 1 then set to time of video 1 so that if this command is run while videos play, 3 doesn't get ahead of 1.
+  osascript \
+    -e 'tell application "QuickTime Player" to set current time of document 1 to current time of document 1 - '$num_sec_ago \
+    -e 'tell application "QuickTime Player" to set current time of document 2 to current time of document 1' \
+    -e 'tell application "QuickTime Player" to set current time of document 3 to current time of document 1'
+ start_vids $speed
+}
+restart_vids_back 8 0.7
+```
+
+# To cleanup mp4 that have become corropted
+convert to .mov if on mac: https://cloudconvert.com/mp4-to-mov
 
 ## TODO
 
